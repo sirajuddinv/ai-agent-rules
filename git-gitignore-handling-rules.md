@@ -99,3 +99,14 @@ When processing a `.gitignore` file that contains both standard and custom rules
     output intact to ensure reproducibility.
 
 - **Cleanliness**: Remove the backup file (`.gitignore.bak`) only after the final verification is complete.
+
+- **Submodule Paths**: Do NOT add `.gitignore` patterns for directories that are Git submodules. Submodules are
+
+    separate repositories and manage their own ignore rules internally. Parent `.gitignore` rules targeting submodule
+    paths are stale by definition. When migrating a directly-tracked directory to a submodule, remove the old
+    directory's ignore/negation patterns entirely — do not convert them to reference the new submodule path.
+
+- **Stale Pattern Cleanup**: When a directory is renamed, deleted, or migrated to a submodule, scan `.gitignore` for
+
+    patterns referencing the old directory name. These orphaned patterns should be removed in the same atomic commit
+    as the directory operation to prevent configuration drift.
